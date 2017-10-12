@@ -1,0 +1,53 @@
+﻿<html>
+<head>
+    <title>Notificación</title>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <script src='/js/jquery.min.js'></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+   
+</head>
+<body>
+  <div class='container'>
+    <ul class='timeline'>
+      
+    </ul>
+</div>
+<script type="text/javascript">
+         var mySocket = {
+            server: {
+                init: function () {
+                    var countNotification = 0, msj = '';
+                    var socket = io.connect();
+                    socket.on('field', function (data) {
+                        countNotification++;
+                        if (countNotification > 10) {
+                            document.title = '(' + countNotification + ') ' + (countNotification > 1 ? 'Notificaciones' : 'Notificación');
+                        } else {
+                            document.title = '(' + countNotification + ') ' + (countNotification > 1 ? 'Notificaciones' : 'Notificación');
+                        }
+
+
+                        if (data.search('IsId') == 0) {
+                            var array = data.split(':');
+                            if ($(".StudentId-" + array[1]).size() > 0) {
+                                $(".StudentId-" + array[1]).removeClass('alert-info');
+                                $(".StudentId-" + array[1]).addClass('alert-success');
+                                $(".StudentId-" + array[1]).text("ENTREGADO(A)");
+                            }
+                        } else {
+                            $(".timeline").prepend(data);
+                        }
+                    });
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            mySocket.server.init();
+        });
+    </script>
+</body>
+</html>
